@@ -10,7 +10,9 @@ function UserData(props) {
         {props.userDataShown.map((user) => (
           <li>
             <span> {user.name}</span>
+            <span> {user.college}</span>
             <span>({user.age} years old)</span>
+          
           </li>
         ))}
       </ul>

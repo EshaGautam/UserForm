@@ -1,49 +1,71 @@
 
 import './Form.css'
-import { useState } from 'react';
+import { useState , useRef} from 'react';
 
 import Error from '../modals/Error';
 import Button from '../Button/Button';
 import Card from '../Card/Card';
 
 function Form(props){
-  const[username,setUsername] = useState('');
-  const[userage,setUserage] = useState('');
-  const[error,setError] =useState(null)
 
-  const handleUsername =(event)=>{
-   let newName = event.target.value;
-   setUsername(newName);
 
-  }
-  const handleUserage =(event)=>{
-    let newAge = event.target.value
-    setUserage(newAge)
-  }
+ const enteredName = useRef();
+ const enteredAge = useRef();
+ const enteredCollege = useRef();
+const [error, setError] = useState(null);
+
+
+  // const[username,setUsername] = useState('');
+  // const[userage,setUserage] = useState('');
+ 
+
+  // const handleUsername =(event)=>{
+  //  let newName = event.target.value;
+  //  setUsername(newName);
+
+  // }
+  // const handleUserage =(event)=>{
+  //   let newAge = event.target.value
+  //   setUserage(newAge)
+  // }
   
 
     const handleFormSubmit=(event)=>{
         event.preventDefault();
-        if(username.trim().length === 0 && userage <=0){
+    const  inputName = enteredName.current.value;
+    const inputAge = enteredAge.current.value;
+    const  inputCollege = enteredCollege.current.value;
+
+        if(inputName.trim().length === 0 && inputAge <=0){
         setError({title:'Invalid Inputs', message:'Please fill the input fields'})
             return
         }
-        if(+userage <1){
-              setError({
-                title: "Invalid Age",
-                message: "Please enter valid age",
-              });
-          return
+        if (+inputAge < 1) {
+          setError({
+            title: "Invalid Age",
+            message: "Please enter valid age",
+          });
+          return;
         }
+        if (inputCollege.trim().length === 0) {
+          setError({
+            title: "Input Invalid",
+            message: "Please fill all the fields",
+          });
+          return;
+        }
+
         const userData ={
-            name:username,
-            age:userage,
+            name:inputName,
+            age:inputAge,
+            college:inputCollege,
         }
     
     props.onSubmitNewData(userData);
-   
-      setUsername('')
-      setUserage('')
+      
+    enteredName.current.value=""
+    enteredAge.current.value=""
+    enteredCollege.current.value=""
     }
 
     const handleErrorstate = () =>{
@@ -57,15 +79,17 @@ function Form(props){
           <Error
             title={error.title}
             message={error.message}
-            OnClick={handleErrorstate}
+            onClick={handleErrorstate}
           />
         )}
         <Card className="input">
           <form onSubmit={handleFormSubmit}>
             <label>Username</label>
-            <input type="text" onChange={handleUsername} value={username} />
+            <input type="text" ref={enteredName} />
             <label>Age(Years)</label>
-            <input type="number" onChange={handleUserage} value={userage} />
+            <input type="number" ref={enteredAge} />
+            <label> College Name</label>
+            <input type='text' ref={enteredCollege} />
             <Button type="submit">Add User</Button>
           </form>
         </Card>
